@@ -3,31 +3,9 @@ services:
     name: aqar-hub-api
     runtime: node
     buildCommand: npm run build
-    startCommand: npm run start:prod
+    startCommand: npm run start
     envVars:
       - key: PORT
         value: 3000
-      - key: DB_HOST
-        fromDatabase:
-          name: aqar-hub-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: aqar-hub-db
-          property: port
-      - key: DB_USERNAME
-        fromDatabase:
-          name: aqar-hub-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: aqar-hub-db
-          property: password
-      - key: DB_NAME
-        fromDatabase:
-          name: aqar-hub-db
-          property: database
-
-databases:
-  - name: aqar-hub-db
-    plan: free
+      - key: DATABASE_URL
+        sync: false # Render will ask you to paste your Neon connection string in the UI during deployment
