@@ -16,7 +16,8 @@ import { NotificationsModule } from './notifications/notifications.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const databaseUrl = configService.get<string>('DATABASE_URL');
+        const databaseUrl = process.env.DATABASE_URL || configService.get<string>('DATABASE_URL');
+        console.log('DATABASE_URL check:', databaseUrl ? 'DEFINED' : 'UNDEFINED');
         return {
           type: 'postgres',
           ...(databaseUrl
@@ -30,7 +31,7 @@ import { NotificationsModule } from './notifications/notifications.module';
               }),
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: true, // Only for development
-          ssl: databaseUrl || configService.get<string>('NODE_ENV') === 'production'
+          ssl: databaseUrl || process.env.NODE_ENV === 'production'
             ? { rejectUnauthorized: false }
             : false,
         };
