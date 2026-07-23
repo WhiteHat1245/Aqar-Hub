@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Apartment } from './entities/apartment.entity';
@@ -6,11 +6,52 @@ import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { UpdateApartmentDto } from './dto/update-apartment.dto';
 
 @Injectable()
-export class ApartmentsService {
+export class ApartmentsService implements OnApplicationBootstrap {
   constructor(
     @InjectRepository(Apartment)
     private readonly apartmentRepository: Repository<Apartment>,
   ) {}
+
+  async onApplicationBootstrap() {
+    const count = await this.apartmentRepository.count();
+    if (count === 0) {
+      console.log('Seeding initial apartments data...');
+      const seedData: CreateApartmentDto[] = [
+        {
+          title: 'فيلا فاخرة بمسبح خاص في حطين',
+          type: 'villa',
+          region: 'الرياض',
+          basePrice: 1200,
+          roomsCount: 4,
+          capacity: 8,
+          amenities: { wifi: true, pool: true, parking: true, ac: true },
+        },
+        {
+          title: 'شقة عصرية مطلة على البحر بالحمراء',
+          type: 'apartment',
+          region: 'جدة',
+          basePrice: 650,
+          roomsCount: 2,
+          capacity: 4,
+          amenities: { wifi: true, pool: false, parking: true, ac: true },
+        },
+        {
+          title: 'شاليه هادئ مطر على البحيرة بالخبر',
+          type: 'chalet',
+          region: 'الشرقية',
+          basePrice: 900,
+          roomsCount: 3,
+          capacity: 6,
+          amenities: { wifi: true, pool: true, parking: true, ac: true },
+        },
+      ];
+
+      for (const item of seedData) {
+        await this.create(item);
+      }
+      console.log('Seeding complete.');
+    }
+  }
 
   async create(createApartmentDto: CreateApartmentDto): Promise<Apartment> {
     const apartment = this.apartmentRepository.create(createApartmentDto);
