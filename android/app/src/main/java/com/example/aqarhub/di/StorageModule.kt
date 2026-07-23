@@ -20,4 +20,12 @@ object StorageModule {
     ): EncryptedSharedPreferencesManager {
         return EncryptedSharedPreferencesManager(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideAuthPreferences(
+        @ApplicationContext context: Context
+    ): com.example.aqarhub.data.local.AuthPreferences {
+        return com.example.aqarhub.data.local.AndroidAuthPreferencesFactory.create(context)
+    }
 }

@@ -10,6 +10,7 @@ data class UserResponse(
     val phoneNumber: String? = null,
     val role: String,
     val loyaltyPoints: Int = 0
+    
 )
 
 @Serializable

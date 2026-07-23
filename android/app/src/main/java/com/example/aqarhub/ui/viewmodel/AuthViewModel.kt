@@ -22,7 +22,8 @@ sealed interface AuthState {
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authApi: AuthApiService,
-    private val encryptedPrefs: EncryptedSharedPreferencesManager
+    private val encryptedPrefs: EncryptedSharedPreferencesManager,
+    private val authPreferences: com.example.aqarhub.data.local.AuthPreferences
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
@@ -60,6 +61,7 @@ class AuthViewModel @Inject constructor(
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
                     encryptedPrefs.saveAccessToken(body.access_token)
+                    authPreferences.saveToken(body.access_token)
                     _state.value = AuthState.Success
                 } else {
                     val errorMsg = response.errorBody()?.string() ?: "فشل تسجيل الدخول"
@@ -72,20 +74,16 @@ class AuthViewModel @Inject constructor(
     }
 
     fun register(name: String, email: String, phone: String, password: String) {
-        if (!isValidName(name)) {
-            _state.value = AuthState.Error("الاسم يجب أن يتكون من 3 أحرف على الأقل")
-            return
+        val error = when {
+            !isValidName(name) -> "الاسم يجب أن يتكون من 3 أحرف على الأقل"
+            !isValidEmail(email) -> "البريد الإلكتروني المدخل غير صالح"
+            !isValidPhone(phone) -> "رقم الهاتف غير صالح. يجب أن يحتوي على أرقام فقط (بين 7 و 15 رقماً)"
+            password.length < 8 -> "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
+            else -> null
         }
-        if (!isValidEmail(email)) {
-            _state.value = AuthState.Error("البريد الإلكتروني المدخل غير صالح")
-            return
-        }
-        if (!isValidPhone(phone)) {
-            _state.value = AuthState.Error("رقم الهاتف غير صالح. يجب أن يحتوي على أرقام فقط (بين 7 و 15 رقماً)")
-            return
-        }
-        if (password.length < 8) {
-            _state.value = AuthState.Error("كلمة المرور يجب أن تكون 8 أحرف على الأقل")
+
+        if (error != null) {
+            _state.value = AuthState.Error(error)
             return
         }
 

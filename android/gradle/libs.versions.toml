@@ -18,6 +18,8 @@ okhttp = "4.12.0"
 hilt = "2.55"
 coil = "2.6.0"
 securityCrypto = "1.1.0-alpha06"
+multiplatformSettings = "1.2.0"
+
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -53,6 +55,8 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.3" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
