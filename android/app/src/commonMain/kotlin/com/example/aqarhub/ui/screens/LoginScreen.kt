@@ -1,3 +1,5 @@
+@file:JvmName("SharedLoginScreen")
+
 package com.example.aqarhub.ui.screens
 
 import androidx.compose.animation.*

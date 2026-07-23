@@ -11,7 +11,7 @@ interface AuthPreferences {
 }
 
 class AuthPreferencesImpl(
-    private val settings: Settings = Settings()
+    private val settings: Settings
 ) : AuthPreferences {
 
     override fun saveToken(token: String) {
